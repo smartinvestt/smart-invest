@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Smart Invest — Trading & Économie</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#080810;--bg2:#0d0d18;--bg3:#13131f;--bg4:#1a1a2a;
+  --border:rgba(255,255,255,0.06);--border2:rgba(255,255,255,0.12);
+  --accent:#7c6ef5;--al:#a99ef8;--ad:rgba(124,110,245,0.12);
+  --teal:#2dd4a0;--td:rgba(45,212,160,0.1);
+  --amber:#f0a430;--ambd:rgba(240,164,48,0.1);
+  --text:#eeedf8;--muted:#79788f;--muted2:#a09eb8;
+  --fd:'Syne',sans-serif;--fb:'DM Sans',sans-serif;
+}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:var(--fb);font-size:16px;line-height:1.6;overflow-x:hidden}
+nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:16px 48px;background:rgba(8,8,16,0.88);backdrop-filter:blur(16px);border-bottom:0.5px solid var(--border)}
+.nl{display:flex;align-items:center;gap:10px}
+.nl img{width:30px;height:30px;object-fit:contain}
+.nl-name{font-family:var(--fd);font-size:14px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--text)}
+.nlinks{display:flex;align-items:center;gap:28px}
+.nlinks a{font-size:13px;color:var(--muted);text-decoration:none;transition:color .2s}
+.nlinks a:hover{color:var(--text)}
+.ncta{background:var(--accent);color:#fff;font-family:var(--fd);font-size:12px;font-weight:600;padding:9px 20px;border-radius:8px;text-decoration:none;letter-spacing:0.04em;transition:background .2s,transform .15s}
+.ncta:hover{background:#9182f7;transform:translateY(-1px)}
+.hbg{display:none;flex-direction:column;gap:5px;cursor:pointer}
+.hbg span{display:block;width:22px;height:1.5px;background:var(--muted)}
+.mob{display:none;position:fixed;inset:0;background:var(--bg);z-index:99;padding:100px 32px 40px;flex-direction:column;gap:20px}
+.mob a{font-family:var(--fd);font-size:20px;font-weight:600;color:var(--text);text-decoration:none;border-bottom:0.5px solid var(--border);padding-bottom:18px}
+.mob.open{display:flex}
+.wrap{max-width:1100px;margin:0 auto;padding:100px 48px}
+.stag{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;padding:5px 12px;border-radius:20px;margin-bottom:18px}
+.stag.p{background:var(--ad);color:var(--al);border:0.5px solid rgba(124,110,245,0.2)}
+.stag.t{background:var(--td);color:var(--teal);border:0.5px solid rgba(45,212,160,0.2)}
+.stag.a{background:var(--ambd);color:var(--amber);border:0.5px solid rgba(240,164,48,0.2)}
+.dot{width:5px;height:5px;border-radius:50%;display:inline-block}
+.dot.p{background:var(--accent)}
+.dot.t{background:var(--teal)}
+.dot.a{background:var(--amber)}
+h2{font-family:var(--fd);font-size:clamp(30px,4vw,46px);font-weight:700;line-height:1.1;color:var(--text);margin-bottom:14px}
+h2 em{font-style:normal;color:var(--al)}
+.ssub{font-size:15px;color:var(--muted2);line-height:1.75;max-width:560px}
+.chip{font-size:11px;font-weight:500;padding:4px 10px;border-radius:20px}
+.chip.p{background:var(--ad);color:var(--al);border:0.5px solid rgba(124,110,245,0.2)}
+.chip.t{background:var(--td);color:var(--teal);border:0.5px solid rgba(45,212,160,0.2)}
+.chip.a{background:var(--ambd);color:var(--amber);border:0.5px solid rgba(240,164,48,0.2)}
+.btn{background:var(--accent);color:#fff;font-family:var(--fd);font-size:14px;font-weight:600;padding:14px 28px;border-radius:10px;text-decoration:none;display:inline-block;letter-spacing:0.02em;transition:background .2s,transform .15s}
+.btn:hover{background:#9182f7;transform:translateY(-2px)}
+.btn-o{color:var(--muted2);font-size:14px;text-decoration:none;display:inline-flex;align-items:center;gap:6px;transition:color .2s}
+.btn-o:hover{color:var(--text)}
+.reveal{opacity:0;transform:translateY(20px);transition:opacity .65s ease,transform .65s ease}
+.reveal.on{opacity:1;transform:none}
+@keyframes fadeUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+@keyframes pulseA{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(.8)}}
+@keyframes ticker{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+#hero{min-height:100vh;display:flex;align-items:center;padding-top:120px;padding-bottom:80px;position:relative;overflow:hidden}
+.hero-wrap{max-width:1100px;margin:0 auto;padding:0 48px;width:100%;position:relative;z-index:1}
+.hero-glow{position:fixed;top:-150px;left:50%;transform:translateX(-50%);width:900px;height:600px;background:radial-gradient(ellipse at 50% 0%,rgba(124,110,245,0.1) 0%,transparent 65%);pointer-events:none;z-index:0}
+.hero-grid{display:grid;grid-template-columns:1fr 380px;gap:64px;align-items:center}
+.hero-left{opacity:0;animation:fadeUp .6s ease .1s forwards}
+.hero-badge{display:inline-flex;align-items:center;gap:7px;background:var(--td);color:var(--teal);font-size:11px;font-weight:500;padding:5px 12px;border-radius:20px;border:0.5px solid rgba(45,212,160,0.2);margin-bottom:24px}
+.pulse{width:6px;height:6px;border-radius:50%;background:var(--teal);animation:pulseA 2s infinite;display:inline-block}
+h1{font-family:var(--fd);font-size:clamp(38px,5vw,62px);font-weight:800;line-height:1.06;color:var(--text);margin-bottom:20px}
+h1 em{font-style:normal;color:var(--al)}
+h1 .dim{display:block;color:var(--muted)}
+.hero-sub{font-size:16px;color:var(--muted2);line-height:1.75;max-width:480px;margin-bottom:36px}
+.hero-actions{display:flex;align-items:center;gap:16px;flex-wrap:wrap;margin-bottom:48px}
+.hero-stats{display:flex;gap:32px;padding-top:32px;border-top:0.5px solid var(--border);flex-wrap:wrap}
+.stat-v{font-family:var(--fd);font-size:26px;font-weight:700;color:var(--text)}
+.stat-l{font-size:12px;color:var(--muted);margin-top:2px}
+.hero-right{opacity:0;animation:fadeUp .6s ease .3s forwards}
+.hero-card{background:var(--bg3);border:0.5px solid var(--border2);border-radius:22px;overflow:hidden;position:relative}
+.hero-card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--accent),transparent)}
+.hero-card img{width:100%;height:300px;object-fit:cover;object-position:center top;display:block}
+.hero-card-body{padding:18px 20px}
+.hero-card-name{font-family:var(--fd);font-size:15px;font-weight:600;color:var(--text)}
+.hero-card-role{font-size:12px;color:var(--muted);margin-top:3px}
+.hero-card-chips{display:flex;gap:6px;margin-top:12px;flex-wrap:wrap}
+.ticker-wrap{border-top:0.5px solid var(--border);border-bottom:0.5px solid var(--border);background:var(--bg2);padding:14px 0;overflow:hidden;white-space:nowrap}
+.ticker-inner{display:inline-flex;animation:ticker 35s linear infinite}
+.ticker-item{display:inline-flex;align-items:center;gap:8px;padding:0 32px;font-size:12px;font-weight:500;color:var(--muted);letter-spacing:0.04em;text-transform:uppercase;border-right:0.5px solid var(--border)}
+.ticker-item .val{color:var(--teal);font-family:var(--fd)}
+.ticker-item .neg{color:#f06060;font-family:var(--fd)}
+.notions-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:48px}
+.notion-card{background:var(--bg3);border:0.5px solid var(--border);border-radius:16px;padding:24px;transition:border-color .2s,background .2s;position:relative;overflow:hidden}
+.notion-card:hover{border-color:var(--border2);background:var(--bg4)}
+.notion-card::after{content:'';position:absolute;bottom:0;left:0;right:0;height:2px;opacity:0;transition:opacity .2s}
+.notion-card:hover::after{opacity:1}
+.nc-v::after{background:linear-gradient(90deg,transparent,var(--accent),transparent)}
+.nc-t::after{background:linear-gradient(90deg,transparent,var(--teal),transparent)}
+.nc-a::after{background:linear-gradient(90deg,transparent,var(--amber),transparent)}
+.notion-icon{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;margin-bottom:16px}
+.ni-v{background:var(--ad)}
+.ni-t{background:var(--td)}
+.ni-a{background:var(--ambd)}
+.notion-card h3{font-family:var(--fd);font-size:15px;font-weight:600;color:var(--text);margin-bottom:8px}
+.notion-card p{font-size:13px;color:var(--muted);line-height:1.6}
+.notion-tags{display:flex;gap:6px;flex-wrap:wrap;margin-top:14px}
+.offre-card{background:var(--bg3);border:0.5px solid var(--border2);border-radius:24px;overflow:hidden;position:relative;margin-top:48px}
+.offre-card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--al),transparent)}
+.offre-top{display:grid;grid-template-columns:1fr 1fr;border-bottom:0.5px solid var(--border)}
+.offre-left{padding:40px;border-right:0.5px solid var(--border)}
+.offre-title{font-family:var(--fd);font-size:clamp(24px,3vw,36px);font-weight:700;color:var(--text);margin-bottom:10px}
+.offre-title em{font-style:normal;color:var(--al)}
+.offre-desc{font-size:14px;color:var(--muted2);line-height:1.75;margin-bottom:20px}
+.offre-right{padding:40px}
+.offre-pillars{display:flex;flex-direction:column;gap:12px}
+.offre-pillar{display:flex;align-items:flex-start;gap:14px;padding:14px;background:var(--bg4);border-radius:12px;border:0.5px solid var(--border)}
+.op-icon{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.op-v{background:var(--ad)}
+.op-t{background:var(--td)}
+.op-a{background:var(--ambd)}
+.offre-pillar h4{font-size:13px;font-weight:500;color:var(--text);margin-bottom:2px}
+.offre-pillar p{font-size:12px;color:var(--muted);line-height:1.5}
+.modules{display:grid;grid-template-columns:repeat(3,1fr);border-bottom:0.5px solid var(--border)}
+.module{padding:22px 26px;border-right:0.5px solid var(--border);transition:background .2s}
+.module:nth-child(3n){border-right:none}
+.module:hover{background:var(--bg4)}
+.mod-num{font-family:var(--fd);font-size:11px;font-weight:600;color:var(--accent);letter-spacing:0.1em;margin-bottom:8px}
+.module h4{font-size:13px;font-weight:500;color:var(--text);margin-bottom:4px}
+.module p{font-size:12px;color:var(--muted);line-height:1.55}
+.offre-bottom{padding:24px 40px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px}
+.offre-note{font-size:13px;color:var(--muted)}
+.offre-note strong{color:var(--teal);font-weight:500}
+.steps-grid{display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:center;margin-top:48px}
+.step-list{display:flex;flex-direction:column}
+.step-item{display:flex;gap:16px;padding:20px 0;border-bottom:0.5px solid var(--border)}
+.step-item:last-child{border-bottom:none}
+.step-n{width:28px;height:28px;border-radius:50%;background:var(--ad);border:0.5px solid rgba(124,110,245,0.25);display:flex;align-items:center;justify-content:center;font-family:var(--fd);font-size:11px;font-weight:600;color:var(--al);flex-shrink:0;margin-top:2px}
+.step-item h4{font-size:14px;font-weight:500;color:var(--text);margin-bottom:4px}
+.step-item p{font-size:13px;color:var(--muted);line-height:1.6}
+.steps-visual{background:var(--bg3);border:0.5px solid var(--border2);border-radius:20px;padding:32px;position:relative;overflow:hidden}
+.steps-visual::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--teal),transparent)}
+.sv-title{font-family:var(--fd);font-size:12px;font-weight:600;color:var(--muted);margin-bottom:20px;letter-spacing:0.06em;text-transform:uppercase}
+.sv-stat{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 0;border-bottom:0.5px solid var(--border)}
+.sv-stat:last-child{border-bottom:none}
+.sv-left{flex:1}
+.sv-stat-label{font-size:12px;color:var(--muted);margin-bottom:6px}
+.sv-bar{height:3px;background:var(--border);border-radius:2px;overflow:hidden}
+.sv-fill{height:100%;border-radius:2px;width:0%;transition:width 1.2s ease}
+.sv-stat-val{font-family:var(--fd);font-size:12px;font-weight:600;color:var(--text);white-space:nowrap}
+.nl-inner{max-width:580px;margin:0 auto;text-align:center}
+.nl-form{display:flex;gap:10px;margin-top:32px;justify-content:center;flex-wrap:wrap}
+.nl-form input{flex:1;min-width:220px;background:var(--bg3);border:0.5px solid var(--border2);border-radius:10px;padding:13px 18px;font-family:var(--fb);font-size:14px;color:var(--text);outline:none;transition:border-color .2s}
+.nl-form input:focus{border-color:var(--accent)}
+.nl-form input::placeholder{color:var(--muted)}
+.nl-form button{background:var(--accent);color:#fff;border:none;cursor:pointer;font-family:var(--fd);font-size:13px;font-weight:600;padding:13px 22px;border-radius:10px;letter-spacing:0.03em;transition:background .2s,transform .15s;white-space:nowrap}
+.nl-form button:hover{background:#9182f7;transform:translateY(-1px)}
+.nl-note{font-size:12px;color:var(--muted);margin-top:12px}
+#nl-ok{display:none;color:var(--teal);font-size:14px;margin-top:16px;font-weight:500}
+footer{border-top:0.5px solid var(--border);padding:28px 48px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px}
+.fl{display:flex;align-items:center;gap:8px}
+.fl img{width:22px;height:22px;object-fit:contain}
+.fl span{font-family:var(--fd);font-size:12px;font-weight:600;color:var(--muted);letter-spacing:0.08em;text-transform:uppercase}
+.flinks{display:flex;gap:20px}
+.flinks a{font-size:12px;color:var(--muted);text-decoration:none;transition:color .2s}
+.flinks a:hover{color:var(--text)}
+.fcopy{font-size:12px;color:var(--muted)}
+@media(max-width:900px){
+  nav{padding:14px 24px}
+  .nlinks,.ncta{display:none}
+  .hbg{display:flex}
+  .wrap{padding:72px 24px}
+  .hero-wrap{padding:0 24px}
+  .hero-grid{grid-template-columns:1fr}
+  .hero-right{display:none}
+  .notions-grid{grid-template-columns:1fr}
+  .offre-top{grid-template-columns:1fr}
+  .offre-left{border-right:none;border-bottom:0.5px solid var(--border)}
+  .modules{grid-template-columns:1fr 1fr}
+  .steps-grid{grid-template-columns:1fr}
+  footer{padding:24px}
+}
+@media(max-width:600px){
+  .modules{grid-template-columns:1fr}
+  .module{border-right:none;border-bottom:0.5px solid var(--border)}
+  .module:last-child{border-bottom:none}
+}
+</style>
+</head>
+<body>
+
+<div class="hero-glow"></div>
+
+<nav>
+  <div class="nl">
+    <img src="data:image/png;base64,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" alt="Smart Invest">
+    <span class="nl-name">Smart Invest</span>
+  </div>
+  <div class="nlinks">
+    <a href="#notions">Notions</a>
+    <a href="#offre">Programme</a>
+    <a href="#steps">Comment ca marche</a>
+    <a href="#newsletter">Newsletter</a>
+  </div>
+  <a href="https://cal.com/smart-invest/appel-echange" class="ncta">Reserver un appel</a>
+  <div class="hbg" onclick="document.getElementById('mob').classList.toggle('open')">
+    <span></span><span></span><span></span>
+  </div>
+</nav>
+<div class="mob" id="mob">
+  <a href="#notions" onclick="document.getElementById('mob').classList.remove('open')">Notions</a>
+  <a href="#offre" onclick="document.getElementById('mob').classList.remove('open')">Programme</a>
+  <a href="#steps" onclick="document.getElementById('mob').classList.remove('open')">Comment ca marche</a>
+  <a href="#newsletter" onclick="document.getElementById('mob').classList.remove('open')">Newsletter</a>
+  <a href="https://cal.com/smart-invest/appel-echange" class="btn" style="text-align:center;margin-top:8px">Reserver un appel gratuit</a>
+</div>
+
+<section id="hero">
+  <div class="hero-wrap">
+    <div class="hero-grid">
+      <div class="hero-left">
+        <div class="hero-badge"><span class="pulse"></span>Disponible pour un appel echange</div>
+        <h1>Trading.<br><em>Economie.</em><span class="dim">Une methode complete.</span></h1>
+        <p class="hero-sub">De l analyse macro aux setups de day trading — je t accompagne pour comprendre les marches en profondeur et trader avec une vraie edge.</p>
+        <div class="hero-actions">
+          <a href="https://cal.com/smart-invest/appel-echange" class="btn">Reserver mon appel gratuit</a>
+          <a href="#offre" class="btn-o">Voir le programme <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3 7h8M8 4l3 3-3 3" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+        </div>
+        <div class="hero-stats">
+          <div><div class="stat-v">50+</div><div class="stat-l">Videos de formation</div></div>
+          <div><div class="stat-v">Live</div><div class="stat-l">Analyses de marches</div></div>
+          <div><div class="stat-v">1-on-1</div><div class="stat-l">Coaching personnalise</div></div>
+        </div>
+      </div>
+      <div class="hero-right">
+        <div class="hero-card">
+          <div style="width:100%;height:300px;display:flex;align-items:center;justify-content:center;background:var(--bg4);position:relative;overflow:hidden">
+  <svg width="100%" height="300" viewBox="0 0 380 300" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <rect width="380" height="300" fill="#1a1a2a"/>
+    <!-- Grid lines -->
+    <line x1="0" y1="60" x2="380" y2="60" stroke="rgba(124,110,245,0.06)" stroke-width="1"/>
+    <line x1="0" y1="120" x2="380" y2="120" stroke="rgba(124,110,245,0.06)" stroke-width="1"/>
+    <line x1="0" y1="180" x2="380" y2="180" stroke="rgba(124,110,245,0.06)" stroke-width="1"/>
+    <line x1="0" y1="240" x2="380" y2="240" stroke="rgba(124,110,245,0.06)" stroke-width="1"/>
+    <line x1="76" y1="0" x2="76" y2="300" stroke="rgba(124,110,245,0.06)" stroke-width="1"/>
+    <line x1="152" y1="0" x2="152" y2="300" stroke="rgba(124,110,245,0.06)" stroke-width="1"/>
+    <line x1="228" y1="0" x2="228" y2="300" stroke="rgba(124,110,245,0.06)" stroke-width="1"/>
+    <line x1="304" y1="0" x2="304" y2="300" stroke="rgba(124,110,245,0.06)" stroke-width="1"/>
+    <!-- Chart line -->
+    <path d="M20 220 L60 200 L90 210 L120 170 L150 180 L180 140 L210 155 L240 110 L270 125 L300 85 L330 95 L360 60" stroke="#7c6ef5" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+    <!-- Chart fill -->
+    <path d="M20 220 L60 200 L90 210 L120 170 L150 180 L180 140 L210 155 L240 110 L270 125 L300 85 L330 95 L360 60 L360 300 L20 300Z" fill="url(#chartFill)"/>
+    <!-- Second line (macro) -->
+    <path d="M20 240 L60 235 L90 245 L130 220 L170 230 L210 195 L250 205 L290 175 L330 180 L360 155" stroke="#2dd4a0" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="4 3"/>
+    <!-- Candles -->
+    <rect x="55" y="190" width="8" height="18" rx="1" fill="#7c6ef5" fill-opacity="0.6"/>
+    <rect x="115" y="162" width="8" height="16" rx="1" fill="#7c6ef5" fill-opacity="0.6"/>
+    <rect x="175" y="132" width="8" height="16" rx="1" fill="#7c6ef5" fill-opacity="0.6"/>
+    <rect x="235" y="102" width="8" height="16" rx="1" fill="#2dd4a0" fill-opacity="0.7"/>
+    <rect x="295" y="78" width="8" height="14" rx="1" fill="#2dd4a0" fill-opacity="0.7"/>
+    <!-- Dot at end -->
+    <circle cx="360" cy="60" r="4" fill="#7c6ef5"/>
+    <circle cx="360" cy="60" r="8" fill="#7c6ef5" fill-opacity="0.2"/>
+    <!-- Labels -->
+    <text x="24" y="258" font-family="'DM Sans',sans-serif" font-size="10" fill="rgba(170,158,248,0.5)" letter-spacing="0.05em">MACRO</text>
+    <text x="24" y="272" font-family="'DM Sans',sans-serif" font-size="10" fill="rgba(45,212,160,0.5)" letter-spacing="0.05em">TREND</text>
+    <!-- Top right badge -->
+    <rect x="270" y="18" width="90" height="24" rx="6" fill="rgba(124,110,245,0.15)" stroke="rgba(124,110,245,0.3)" stroke-width="0.5"/>
+    <circle cx="283" cy="30" r="3" fill="#7c6ef5"/>
+    <text x="291" y="34" font-family="'DM Sans',sans-serif" font-size="10" fill="#a99ef8" letter-spacing="0.04em">Smart Invest</text>
+    <defs>
+      <linearGradient id="chartFill" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="#7c6ef5" stop-opacity="0.15"/>
+        <stop offset="100%" stop-color="#7c6ef5" stop-opacity="0"/>
+      </linearGradient>
+    </defs>
+  </svg>
+</div>
+          <div class="hero-card-body">
+            <div class="hero-card-name">Westley</div>
+            <div class="hero-card-role">Trader &amp; coach - Smart Invest</div>
+            <div class="hero-card-chips">
+              <span class="chip p">Macro</span>
+              <span class="chip p">Day trading</span>
+              <span class="chip t">Coaching</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="ticker-wrap">
+  <div class="ticker-inner">
+    <div class="ticker-item"><span>S&amp;P 500</span><span class="val">+0.82%</span></div>
+    <div class="ticker-item"><span>EUR/USD</span><span class="val">1.0842</span></div>
+    <div class="ticker-item"><span>Taux FED</span><span class="val">5.25%</span></div>
+    <div class="ticker-item"><span>Or</span><span class="val">+1.4%</span></div>
+    <div class="ticker-item"><span>Nasdaq</span><span class="val">+1.1%</span></div>
+    <div class="ticker-item"><span>Inflation US</span><span class="val">3.2%</span></div>
+    <div class="ticker-item"><span>VIX</span><span class="neg">18.4</span></div>
+    <div class="ticker-item"><span>DAX</span><span class="val">+0.5%</span></div>
+    <div class="ticker-item"><span>Petrole WTI</span><span class="neg">-0.3%</span></div>
+    <div class="ticker-item"><span>S&amp;P 500</span><span class="val">+0.82%</span></div>
+    <div class="ticker-item"><span>EUR/USD</span><span class="val">1.0842</span></div>
+    <div class="ticker-item"><span>Taux FED</span><span class="val">5.25%</span></div>
+    <div class="ticker-item"><span>Or</span><span class="val">+1.4%</span></div>
+    <div class="ticker-item"><span>Nasdaq</span><span class="val">+1.1%</span></div>
+    <div class="ticker-item"><span>Inflation US</span><span class="val">3.2%</span></div>
+    <div class="ticker-item"><span>VIX</span><span class="neg">18.4</span></div>
+    <div class="ticker-item"><span>DAX</span><span class="val">+0.5%</span></div>
+    <div class="ticker-item"><span>Petrole WTI</span><span class="neg">-0.3%</span></div>
+  </div>
+</div>
+
+<section id="notions" style="background:var(--bg2);padding:0">
+<div class="wrap reveal">
+  <span class="stag p"><span class="dot p"></span>Ce qu on maitrise</span>
+  <h2>Du macro au <em>setup.</em></h2>
+  <p class="ssub">Une vision complete des marches - de la politique monetaire aux points d entree en intraday.</p>
+  <div class="notions-grid">
+
+    <div class="notion-card nc-v reveal">
+      <div class="notion-icon ni-v">
+        <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
+          <circle cx="11" cy="11" r="8" stroke="#a99ef8" stroke-width="1.4"/>
+          <path d="M6 11C6 8.2 8.2 6 11 6" stroke="#a99ef8" stroke-width="1.4" stroke-linecap="round"/>
+          <path d="M16 11C16 13.8 13.8 16 11 16" stroke="#a99ef8" stroke-width="1.4" stroke-linecap="round"/>
+          <circle cx="11" cy="11" r="2" fill="#a99ef8" fill-opacity="0.4"/>
+          <path d="M11 3v2M11 17v2M3 11h2M17 11h2" stroke="#a99ef8" stroke-width="1" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <h3>Economie macro</h3>
+      <p>Cycles economiques, politique monetaire des banques centrales, inflation, taux d interet - comprendre le contexte qui dicte la direction des marches.</p>
+      <div class="notion-tags">
+        <span class="chip p">Cycles eco</span><span class="chip p">Banques centrales</span><span class="chip p">Inflation</span>
+      </div>
+    </div>
+
+    <div class="notion-card nc-t reveal">
+      <div class="notion-icon ni-t">
+        <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
+          <path d="M3 15L7 9.5L11 12.5L15 7L19 9.5" stroke="#2dd4a0" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          <rect x="3" y="16.5" width="16" height="1.2" rx="0.6" fill="#2dd4a0" fill-opacity="0.25"/>
+          <circle cx="7" cy="9.5" r="1.5" fill="#2dd4a0" fill-opacity="0.4"/>
+          <circle cx="15" cy="7" r="1.5" fill="#2dd4a0" fill-opacity="0.4"/>
+        </svg>
+      </div>
+      <h3>Analyse technique</h3>
+      <p>Structures de marche, zones d interet, tendance de fond, indicateurs cles - identifier les setups a haute probabilite sur tous les timeframes.</p>
+      <div class="notion-tags">
+        <span class="chip t">Price action</span><span class="chip t">Structure</span><span class="chip t">Indicateurs</span>
+      </div>
+    </div>
+
+    <div class="notion-card nc-a reveal">
+      <div class="notion-icon ni-a">
+        <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
+          <rect x="3" y="12" width="4" height="7" rx="1.5" fill="#f0a430" fill-opacity="0.25" stroke="#f0a430" stroke-width="1.2"/>
+          <rect x="9" y="7" width="4" height="12" rx="1.5" fill="#f0a430" fill-opacity="0.4" stroke="#f0a430" stroke-width="1.2"/>
+          <rect x="15" y="3" width="4" height="16" rx="1.5" fill="#f0a430" fill-opacity="0.55" stroke="#f0a430" stroke-width="1.2"/>
+        </svg>
+      </div>
+      <h3>Day &amp; swing trading</h3>
+      <p>Strategies court et moyen terme, gestion des positions en temps reel, entrees/sorties optimisees sur les meilleures opportunites intraday et multi-jours.</p>
+      <div class="notion-tags">
+        <span class="chip a">Intraday</span><span class="chip a">Swing</span><span class="chip a">Execution</span>
+      </div>
+    </div>
+
+    <div class="notion-card nc-v reveal">
+      <div class="notion-icon ni-v">
+        <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
+          <path d="M11 4L11 18" stroke="#a99ef8" stroke-width="1.4" stroke-linecap="round"/>
+          <path d="M7 8L11 4L15 8" stroke="#a99ef8" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M5 12h12" stroke="#a99ef8" stroke-width="1.4" stroke-linecap="round"/>
+          <rect x="4" y="15" width="14" height="3" rx="1.5" fill="#a99ef8" fill-opacity="0.15" stroke="#a99ef8" stroke-width="1"/>
+        </svg>
+      </div>
+      <h3>Gestion du risque</h3>
+      <p>Dimensionnement des positions, ratio risk/reward, stop-loss strategiques - proteger son capital est la base de toute performance durable.</p>
+      <div class="notion-tags">
+        <span class="chip p">Stop-loss</span><span class="chip p">Risk/reward</span><span class="chip p">Capital</span>
+      </div>
+    </div>
+
+    <div class="notion-card nc-t reveal">
+      <div class="notion-icon ni-t">
+        <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
+          <path d="M4 11C4 7.1 7.1 4 11 4" stroke="#2dd4a0" stroke-width="1.4" stroke-linecap="round"/>
+          <path d="M18 11C18 14.9 14.9 18 11 18" stroke="#2dd4a0" stroke-width="1.4" stroke-linecap="round"/>
+          <path d="M11 4C14.9 4 18 7.1 18 11" stroke="#2dd4a0" stroke-width="1" stroke-linecap="round" stroke-dasharray="2 2"/>
+          <path d="M11 18C7.1 18 4 14.9 4 11" stroke="#2dd4a0" stroke-width="1" stroke-linecap="round" stroke-dasharray="2 2"/>
+          <circle cx="11" cy="11" r="3" fill="#2dd4a0" fill-opacity="0.2" stroke="#2dd4a0" stroke-width="1.2"/>
+        </svg>
+      </div>
+      <h3>Correlations macro/marches</h3>
+      <p>Comment les donnees macro impactent les actifs - obligations, devises, actions, matieres premieres. Lire l environnement pour anticiper les mouvements.</p>
+      <div class="notion-tags">
+        <span class="chip t">Correlations</span><span class="chip t">Actifs</span><span class="chip t">Anticipation</span>
+      </div>
+    </div>
+
+    <div class="notion-card nc-a reveal">
+      <div class="notion-icon ni-a">
+        <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
+          <circle cx="11" cy="9" r="4" stroke="#f0a430" stroke-width="1.4"/>
+          <path d="M11 13v2.5" stroke="#f0a430" stroke-width="1.4" stroke-linecap="round"/>
+          <path d="M8 19h6" stroke="#f0a430" stroke-width="1.4" stroke-linecap="round"/>
+          <path d="M7.5 16C5.5 14.8 4 12.5 4 9.8" stroke="#f0a430" stroke-width="1.2" stroke-linecap="round"/>
+          <path d="M14.5 16C16.5 14.8 18 12.5 18 9.8" stroke="#f0a430" stroke-width="1.2" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <h3>Psychologie du trader</h3>
+      <p>FOMO, biais cognitifs, discipline - maitriser ses emotions est ce qui separe les traders rentables des autres. La partie la plus negligee.</p>
+      <div class="notion-tags">
+        <span class="chip a">Discipline</span><span class="chip a">Emotions</span><span class="chip a">Mindset</span>
+      </div>
+    </div>
+
+  </div>
+</div>
+</section>
+
+<section id="offre" style="padding:0">
+<div class="wrap reveal">
+  <span class="stag t"><span class="dot t"></span>Le programme</span>
+  <h2>Tout ce qu il faut pour <em>progresser.</em></h2>
+  <p class="ssub">Academie video, communaute, analyses live des marches — et un coaching 1-on-1 direct avec moi. Une seule offre, tout inclus.</p>
+  <div class="offre-card">
+    <div class="offre-top">
+      <div class="offre-left">
+        <div class="offre-title">Market <em>Edge</em></div>
+        <p class="offre-desc">Formation complete en video, communaute active, analyses live des marches chaque semaine - et un accompagnement direct pour progresser plus vite.</p>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:24px">
+          <span class="chip p">50+ videos</span>
+          <span class="chip t">Communaute</span>
+          <span class="chip t">Analyses live</span>
+          <span class="chip a">Coaching 1-on-1</span>
+        </div>
+        <a href="https://cal.com/smart-invest/appel-echange" class="btn">Reserver mon appel gratuit</a>
+      </div>
+      <div class="offre-right">
+        <div class="offre-pillars">
+          <div class="offre-pillar">
+            <div class="op-icon op-v">
+              <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><rect x="2" y="2" width="14" height="10" rx="2.5" stroke="#a99ef8" stroke-width="1.2"/><path d="M7 15h4M9 12v3" stroke="#a99ef8" stroke-width="1.2" stroke-linecap="round"/><path d="M6 8l2 2 4-4" stroke="#a99ef8" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+            <div><h4>Academie video</h4><p>50+ videos structurees du macro aux strategies d execution</p></div>
+          </div>
+          <div class="offre-pillar">
+            <div class="op-icon op-t">
+              <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><circle cx="9" cy="6" r="2.5" stroke="#2dd4a0" stroke-width="1.2"/><circle cx="4.5" cy="12" r="2" stroke="#2dd4a0" stroke-width="1.2"/><circle cx="13.5" cy="12" r="2" stroke="#2dd4a0" stroke-width="1.2"/><path d="M6.5 13.5C7 12 7.8 11 9 11s2 1 2.5 2.5" stroke="#2dd4a0" stroke-width="1.2" stroke-linecap="round"/></svg>
+            </div>
+            <div><h4>Communaute privee</h4><p>Groupe actif pour echanger, progresser et poser tes questions</p></div>
+          </div>
+          <div class="offre-pillar">
+            <div class="op-icon op-t">
+              <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M2 13L5.5 8L9 11L12.5 5.5L16 7.5" stroke="#2dd4a0" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/><circle cx="16" cy="7.5" r="1.5" fill="#2dd4a0" fill-opacity="0.4"/></svg>
+            </div>
+            <div><h4>Analyses live</h4><p>Sessions regulieres de lecture des marches en direct avec commentaires macro</p></div>
+          </div>
+          <div class="offre-pillar">
+            <div class="op-icon op-a">
+              <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><circle cx="9" cy="6.5" r="3" stroke="#f0a430" stroke-width="1.2"/><path d="M3 16.5c0-3.3 2.7-6 6-6s6 2.7 6 6" stroke="#f0a430" stroke-width="1.2" stroke-linecap="round"/><path d="M13.5 4l1.5-1.5M14 6.5h2" stroke="#f0a430" stroke-width="1.1" stroke-linecap="round"/></svg>
+            </div>
+            <div><h4>Coaching 1-on-1</h4><p>Suivi personnalise, feedback sur tes trades, plan de progression sur mesure</p></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="modules">
+      <div class="module"><div class="mod-num">MODULE 01</div><h4>Economie macro</h4><p>Cycles, banques centrales, inflation, taux - le contexte qui tout dicte</p></div>
+      <div class="module"><div class="mod-num">MODULE 02</div><h4>Correlations macro/marches</h4><p>Impact des donnees macro sur devises, actions, matieres premieres</p></div>
+      <div class="module"><div class="mod-num">MODULE 03</div><h4>Analyse technique</h4><p>Structures, setups, indicateurs - identifier les meilleures opportunites</p></div>
+      <div class="module"><div class="mod-num">MODULE 04</div><h4>Strategies de trading</h4><p>Day trading et swing - entrees, sorties, gestion temps reel</p></div>
+      <div class="module"><div class="mod-num">MODULE 05</div><h4>Risk management et psychologie</h4><p>Capital, discipline, biais cognitifs - ce qui fait vraiment la difference</p></div>
+      <div class="module" style="display:flex;align-items:center;justify-content:center"><p style="font-size:13px;color:var(--muted);text-align:center;font-style:italic">Et bien d'autres modules<br>a decouvrir...</p></div>
+    </div>
+    <div class="offre-bottom">
+      <p class="offre-note">Acces communaute inclus · Analyses live regulieres · <strong>Mis a jour en continu</strong></p>
+      <a href="https://cal.com/smart-invest/appel-echange" class="btn">Rejoindre le programme</a>
+    </div>
+  </div>
+</div>
+</section>
+
+<section id="steps" style="padding:0;background:var(--bg2)">
+<div class="wrap reveal">
+  <span class="stag a"><span class="dot a"></span>Comment ca marche</span>
+  <h2>Simple, <em>direct,</em> efficace.</h2>
+  <p class="ssub">On demarre par un appel gratuit, on pose les bases, et on construit ensemble.</p>
+  <div class="steps-grid">
+    <div class="step-list">
+      <div class="step-item">
+        <div class="step-n">1</div>
+        <div><h4>Appel echange gratuit (45 min)</h4><p>On fait le point sur ton niveau, tes objectifs, et ce qui te bloque vraiment</p></div>
+      </div>
+      <div class="step-item">
+        <div class="step-n">2</div>
+        <div><h4>Acces au programme complet</h4><p>Academie, communaute, analyses live - tout est disponible des le depart</p></div>
+      </div>
+      <div class="step-item">
+        <div class="step-n">3</div>
+        <div><h4>Coaching personnalise</h4><p>Sessions regulieres, feedback sur tes trades, ajustements en continu</p></div>
+      </div>
+      <div class="step-item">
+        <div class="step-n">4</div>
+        <div><h4>Tu progresses avec methode</h4><p>Une vraie edge sur les marches - pas juste de la theorie</p></div>
+      </div>
+      <div style="margin-top:28px">
+        <a href="https://cal.com/smart-invest/appel-echange" class="btn">Reserver mon appel gratuit</a>
+        <p style="font-size:12px;color:var(--muted);margin-top:10px">Gratuit · Sans engagement · 45 min</p>
+      </div>
+    </div>
+    <div class="steps-visual">
+      <div class="sv-title">Ce que tu maitrises apres</div>
+      <div class="sv-stat">
+        <div class="sv-left"><div class="sv-stat-label">Lecture macro et contexte</div><div class="sv-bar"><div class="sv-fill" style="background:var(--accent)" data-w="95"></div></div></div>
+        <div class="sv-stat-val">Avance</div>
+      </div>
+      <div class="sv-stat">
+        <div class="sv-left"><div class="sv-stat-label">Analyse technique et setups</div><div class="sv-bar"><div class="sv-fill" style="background:var(--teal)" data-w="90"></div></div></div>
+        <div class="sv-stat-val">Avance</div>
+      </div>
+      <div class="sv-stat">
+        <div class="sv-left"><div class="sv-stat-label">Execution day et swing trading</div><div class="sv-bar"><div class="sv-fill" style="background:var(--accent)" data-w="85"></div></div></div>
+        <div class="sv-stat-val">Solide</div>
+      </div>
+      <div class="sv-stat">
+        <div class="sv-left"><div class="sv-stat-label">Gestion du risque</div><div class="sv-bar"><div class="sv-fill" style="background:var(--teal)" data-w="95"></div></div></div>
+        <div class="sv-stat-val">Avance</div>
+      </div>
+      <div class="sv-stat">
+        <div class="sv-left"><div class="sv-stat-label">Psychologie et discipline</div><div class="sv-bar"><div class="sv-fill" style="background:var(--amber)" data-w="80"></div></div></div>
+        <div class="sv-stat-val">Solide</div>
+      </div>
+    </div>
+  </div>
+</div>
+</section>
+
+<section id="newsletter" style="padding:0">
+<div class="wrap">
+  <div class="nl-inner reveal">
+    <span class="stag p" style="display:inline-flex"><span class="dot p"></span>Newsletter</span>
+    <h2 style="text-align:center">Macro, marches,<br><em>mindset.</em></h2>
+    <p class="ssub" style="text-align:center;margin:0 auto 0">Analyses macro hebdomadaires, decryptage des banques centrales, setups de la semaine - directement dans ta boite mail.</p>
+    <div class="nl-form" id="nlForm">
+      <input type="email" id="nlEmail" placeholder="ton@email.com" autocomplete="email">
+      <button onclick="subNL()">Rejoindre</button>
+    </div>
+    <p class="nl-note">Pas de spam. Desabonnement en 1 clic.</p>
+    <p id="nl-ok">Bienvenue dans la communaute Smart Invest !</p>
+  </div>
+</div>
+</section>
+
+<footer>
+  <div class="fl">
+    <img src="data:image/png;base64,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" alt="Smart Invest">
+    <span>Smart Invest</span>
+  </div>
+  <div class="flinks">
+    <a href="#notions">Notions</a>
+    <a href="#offre">Programme</a>
+    <a href="#steps">Comment ca marche</a>
+    <a href="https://cal.com/smart-invest/appel-echange">Reserver un appel</a>
+  </div>
+  <p class="fcopy">2025 Smart Invest</p>
+</footer>
+
+<script>
+document.querySelectorAll('a[href^="#"]').forEach(a=>{
+  a.addEventListener('click',e=>{
+    var t=document.querySelector(a.getAttribute('href'));
+    if(t){e.preventDefault();t.scrollIntoView({behavior:'smooth'})}
+  });
+});
+var obs=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting){
+      e.target.classList.add('on');
+      e.target.querySelectorAll('.sv-fill').forEach(b=>{
+        b.style.width=b.dataset.w+'%';
+      });
+    }
+  });
+},{threshold:0.1});
+document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
+function subNL(){
+  var em=document.getElementById('nlEmail').value;
+  if(!em||!em.includes('@'))return;
+  document.getElementById('nlForm').style.display='none';
+  document.getElementById('nl-ok').style.display='block';
+}
+</script>
+</body>
+</html>
